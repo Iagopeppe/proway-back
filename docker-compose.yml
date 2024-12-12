@@ -1,0 +1,28 @@
+services:
+  server: 
+    depends_on:
+      postgres: 
+        condition: service_healthy
+    image: proway11
+    ports:
+      - 8080:8080
+    environment:
+      - DBNAME=proway
+      - DBUSER=proway
+      - DBPASS=proway
+      - DBHOST=postgres
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=proway
+      - POSTGRES_USER=proway
+      - POSTGRES_PASSWORD=proway
+    volumes:
+      - ./db_local:/var/lib/postgresql/data 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U proway"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
